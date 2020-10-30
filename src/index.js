@@ -1,5 +1,7 @@
-export default {
-  fileInput: null,
+export default class Files {
+  constructor () {
+    this.fileInput = null
+  }
 
   select ({ multiple = false, accept = '*/*' } = { multiple: false, accept: '*/*' }) {
     return new Promise((resolve, reject) => {
@@ -23,9 +25,9 @@ export default {
 
       this.fileInput.dispatchEvent(new MouseEvent('click'))
     })
-  },
+  }
 
-  processImage ({ blob, width = null, height = null, crop = false }) {
+  static processImage ({ blob, width = null, height = null, crop = false }) {
     let dataUrl
     let type
     let orientation
@@ -111,9 +113,9 @@ export default {
           image.src = dataUrl
         })
       })
-  },
+  }
 
-  blobToDataUrl (blob) {
+  static blobToDataUrl (blob) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader()
       reader.onload = () => resolve(reader.result)
@@ -121,9 +123,9 @@ export default {
       reader.onabort = error => reject(error)
       reader.readAsDataURL(blob)
     })
-  },
+  }
 
-  dataUrlToBlob (dataUrl) {
+  static dataUrlToBlob (dataUrl) {
     return new Promise((resolve, reject) => {
       const parts = dataUrl.split(',')
       const mimeType = parts[0].match(/:(.*?);/)[1]
@@ -135,17 +137,17 @@ export default {
       }
       resolve(new Blob([arr], { type: mimeType }))
     })
-  },
+  }
 
-  blobToBase64 (blob) {
+  static blobToBase64 (blob) {
     return this.blobToDataUrl(blob)
       .then(dataUrl => {
         const separator = ';base64,'
         return dataUrl.substring(dataUrl.indexOf(separator) + separator.length)
       })
-  },
+  }
 
-  blobToArrayBuffer (blob) {
+  static blobToArrayBuffer (blob) {
     return this.blobToBase64(blob)
       .then(base64 => {
         const binary = window.atob(base64)
@@ -156,9 +158,9 @@ export default {
         }
         return buffer
       })
-  },
+  }
 
-  blobToString (blob, encoding = 'UTF-8') {
+  static blobToString (blob, encoding = 'UTF-8') {
     return new Promise((resolve, reject) => {
       const reader = new FileReader()
       reader.onload = function () {
@@ -166,16 +168,16 @@ export default {
       }
       reader.readAsText(blob, encoding)
     })
-  },
+  }
 
-  stringToBlob (string, type = 'application/octet-stream') {
+  static stringToBlob (string, type = 'application/octet-stream') {
     return this.stringToByteArray(string)
       .then(byteArray => {
         return new Blob([byteArray], { type })
       })
-  },
+  }
 
-  stringToByteArray (string) {
+  static stringToByteArray (string) {
     return new Promise((resolve, reject) => {
       const byteNumbers = new Array(string.length)
       for (let i = 0; i < string.length; i++) {
@@ -184,9 +186,9 @@ export default {
       const byteArray = new Uint8Array(byteNumbers)
       resolve(byteArray)
     })
-  },
+  }
 
-  getImageOrientation (blob) {
+  static getImageOrientation (blob) {
     return this.blobToArrayBuffer(blob)
       .then(buffer => {
         /** @link https://github.com/exif-js/exif-js */
@@ -240,9 +242,9 @@ export default {
           }
         }
       })
-  },
+  }
 
-  getMimeTypeFromDataUrl (dataUrl) {
+  static getMimeTypeFromDataUrl (dataUrl) {
     return new Promise((resolve, reject) => {
       const matches = /^data:(.+?);/.exec(dataUrl)
       if (matches && matches[1]) {
@@ -251,7 +253,7 @@ export default {
       }
       reject(new Error('Cannot detect the MIME type.'))
     })
-  },
+  }
 
   getImageSizeForContain (sourceWidth, sourceHeight, targetWidth, targetHeight) {
     const ret = {}
@@ -269,7 +271,7 @@ export default {
       return { width: sourceWidth, height: sourceHeight }
     }
     return this.getImageSizeForContain(ret.width, ret.height, targetWidth, targetHeight)
-  },
+  }
 
   getImageSizeForFill (sourceWidth, sourceHeight, targetWidth, targetHeight) {
     if (sourceWidth / sourceHeight > targetWidth / targetHeight) {

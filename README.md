@@ -17,18 +17,20 @@ npm install --save file-promisify
 ```js
 import Files from 'file-promisify'
 
+const files = new Files()
+
 /** open file dialog */
-Files.select()
+files.select()
   .then(blob => {})
   .catch(error => {})
 
 /** open file dialog for selecting multiple files */
-Files.select({ multiple: true })
+files.select({ multiple: true })
   .then(blobs => {})
   .catch(error => {})
 
 /** open file dialog for selecting an image file */
-Files.select({ accept: 'image/*' })
+files.select({ accept: 'image/*' })
   .then(blob => {
     /** wrap image into maximum 128 × 128 pixels */
     Files.processImage({ blob, width: 128, height: 128, crop: false })
@@ -45,7 +47,7 @@ Files.select({ accept: 'image/*' })
 
 ## API
 
-### `Files.select({ multiple: [multiple], accept: [accept] })`
+### `files.select({ multiple: [multiple], accept: [accept] })`
 
 Open a file dialog.
 
