@@ -1,0 +1,29 @@
+{
+  "name": "file-promisify",
+  "version": "1.0.0",
+  "description": "Utilities for file handling and image handling, in JavaScript, with Promise.",
+  "main": "dist/file-promisify.es.js",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/valesdev/file-promisify.git"
+  },
+  "author": "Yuan Chong <ychongsaytc@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/valesdev/file-promisify/issues"
+  },
+  "homepage": "https://github.com/valesdev/file-promisify#readme",
+  "keywords": [
+    "File",
+    "Image",
+    "Promise"
+  ],
+  "devDependencies": {
+    "@rollup/plugin-buble": "^0.21.3",
+    "rollup": "^2.32.1",
+    "terser": "^5.3.8"
+  }
+}
