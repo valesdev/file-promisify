@@ -139,11 +139,17 @@ export default class Files {
     })
   }
 
+  static dataUrlToBase64 (dataUrl) {
+    return new Promise((resolve, reject) => {
+      const separator = ';base64,'
+      resolve(dataUrl.substring(dataUrl.indexOf(separator) + separator.length))
+    })
+  }
+
   static blobToBase64 (blob) {
     return this.blobToDataUrl(blob)
       .then(dataUrl => {
-        const separator = ';base64,'
-        return dataUrl.substring(dataUrl.indexOf(separator) + separator.length)
+        return this.dataUrlToBase64(dataUrl)
       })
   }
 
@@ -255,7 +261,7 @@ export default class Files {
     })
   }
 
-  getImageSizeForContain (sourceWidth, sourceHeight, targetWidth, targetHeight) {
+  static getImageSizeForContain (sourceWidth, sourceHeight, targetWidth, targetHeight) {
     const ret = {}
     if (sourceWidth > targetWidth || sourceHeight > targetHeight) {
       if (sourceWidth > sourceHeight) {
@@ -273,7 +279,7 @@ export default class Files {
     return this.getImageSizeForContain(ret.width, ret.height, targetWidth, targetHeight)
   }
 
-  getImageSizeForFill (sourceWidth, sourceHeight, targetWidth, targetHeight) {
+  static getImageSizeForFill (sourceWidth, sourceHeight, targetWidth, targetHeight) {
     if (sourceWidth / sourceHeight > targetWidth / targetHeight) {
       return {
         width: sourceWidth * (targetHeight / sourceHeight),

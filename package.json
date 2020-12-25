@@ -1,6 +1,6 @@
 {
   "name": "file-promisify",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Utilities for file handling and image handling, in JavaScript, with Promise.",
   "main": "dist/file-promisify.es.js",
   "scripts": {
