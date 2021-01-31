@@ -8,55 +8,83 @@
 
     <title>file-promisify demo</title>
 
-    <script type="application/javascript" src="//unpkg.com/file-promisify/dist/file-promisify.min.js"></script>
+    <script type="module" src="//unpkg.com/file-promisify/lib/index.js"></script>
   </head>
   <body>
     <h2>file-promisify demo</h2>
 
-    <p>
-      <a href="javascript:void(0);" onclick="toSelect();">Select a file</a>
-    </p>
+    <fieldset>
+      <legend>Single file</legend>
 
-    <p>
-      <a href="javascript:void(0);" onclick="toSelectMultiple();">Select multi files</a>
-    </p>
+      <div>
+        <button type="button" onclick="toSelect();">Select a file</button>
+      </div>
 
-    <p>
-      <a href="javascript:void(0);" onclick="toSelectImage();">Select an image file</a>
-    </p>
+      <dl>
+        <dt>selected:</dt>
+        <dd>
+          <pre id="outputSingleFile" />
+        </dd>
+      </dl>
+    </fieldset>
 
-    <p>
-      image orientation: <code id="outputOrientation"></code>
-    </p>
+    <fieldset>
+      <legend>Multiple files</legend>
 
-    <p>
-      image data url (first 128 chars): <code id="outputDataUrl"></code>
-    </p>
+      <div>
+        <button type="button" onclick="toSelectMultiple();">Select multiple files</button>
+      </div>
 
-    <p>
-      crop image into 128 &times; 128 exactly: <code id="outputImageCroppedLog"></code>
-    </p>
+      <dl>
+        <dt>selected:</dt>
+        <dd>
+          <pre id="outputMultipleFiles" />
+        </dd>
+      </dl>
+    </fieldset>
 
-    <p>
-      <img id="outputImageCropped" />
-    </p>
+    <fieldset>
+      <legend>Image handling</legend>
 
-    <p>
-      wrap image into maximum 128 &times; 128: <code id="outputImageWrappedLog"></code>
-    </p>
+      <div>
+        <button type="button" onclick="toSelectImage();">Select an image file</button>
+      </div>
 
-    <p>
-      <img id="outputImageWrapped" />
-    </p>
+      <dl>
+        <dt>image orientation:</dt>
+        <dd>
+          <pre id="outputOrientation" />
+        </dd>
 
-    <script type="application/javascript">
+        <dt>image data url (first 64 chars):</dt>
+        <dd>
+          <pre id="outputDataUrl" />
+        </dd>
+
+        <dt>crop image into 128 &times; 128 pixels exactly:</dt>
+        <dd>
+          <img id="outputImageCropped" />
+        </dd>
+
+        <dt>wrap image into maximum 320 &times; 240 pixels:</dt>
+        <dd>
+          <img id="outputImageWrapped" />
+        </dd>
+      </dl>
+    </fieldset>
+
+    <script type="module">
+      import Files from '//unpkg.com/file-promisify/lib/index.js'
+
+      const instance = new Files()
+
       window.document.addEventListener('DOMContentLoaded', function () {
       }, false)
 
       window.toSelect = function () {
-        window.Files.select()
-          .then(function (file) {
-            window.alert(`You've selected: ${file.name}`)
+        instance.select()
+          .then(function (files) {
+            window.document.getElementById('outputSingleFile').innerText = `${files[0].name} (${files[0].type}, ${files[0].size} bytes)`
           })
           .catch(function (error) {
             window.alert(`Error: ${error.message}`)
@@ -64,9 +92,11 @@
       }
 
       window.toSelectMultiple = function () {
-        window.Files.select({ multiple: true })
+        instance.select({ multiple: true })
           .then(function (files) {
-            window.alert(`You've selected ${files.length} files.`)
+            window.document.getElementById('outputMultipleFiles').innerText = (Array.apply(null, new Array(files.length))).map(function (el, i) {
+              return `${files[i].name} (${files[i].type}, ${files[i].size} bytes)`
+            }).join('\n')
           })
           .catch(function (error) {
             window.alert(`Error: ${error.message}`)
@@ -74,13 +104,12 @@
       }
 
       window.toSelectImage = function () {
-        window.Files.select({ accept: 'image/*' })
-          .then(function (file) {
-            window.alert(`You've selected: ${file.name}`)
-            return file
+        instance.select({ accept: 'image/*' })
+          .then(function (files) {
+            return files[0]
           })
           .then(function (file) {
-            window.Files.getImageOrientation(file)
+            Files.getImageOrientation(file)
               .then(function (orientation) {
                 window.document.getElementById('outputOrientation').innerText = JSON.stringify(orientation)
               })
@@ -88,15 +117,15 @@
                 window.document.getElementById('outputOrientation').innerText = `Error: ${error.message}`
               })
 
-            window.Files.blobToDataUrl(file)
+            Files.blobToDataUrl(file)
               .then(function (dataUrl) {
-                window.document.getElementById('outputDataUrl').innerText = dataUrl.substring(0, 128)
+                window.document.getElementById('outputDataUrl').innerText = dataUrl.substring(0, 64) + '…'
               })
               .catch(function (error) {
                 window.document.getElementById('outputDataUrl').innerText = `Error: ${error.message}`
               })
 
-            window.Files.processImage({ blob: file, width: 128, height: 128, crop: true })
+            Files.processImage({ blob: file, width: 128, height: 128, crop: true })
               .then(function (dataUrl) {
                 window.document.getElementById('outputImageCropped').src = dataUrl
               })
@@ -104,7 +133,7 @@
                 window.document.getElementById('outputImageCroppedLog').innerText = `Error: ${error.message}`
               })
 
-            window.Files.processImage({ blob: file, width: 128, height: 128, crop: false })
+            Files.processImage({ blob: file, width: 320, height: 240, crop: false })
               .then(function (dataUrl) {
                 window.document.getElementById('outputImageWrapped').src = dataUrl
               })

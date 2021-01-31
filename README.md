@@ -4,7 +4,9 @@
 [![Downloads](https://img.shields.io/npm/dm/file-promisify.svg)](https://npmcharts.com/compare/file-promisify?minimal=true)
 [![License](https://img.shields.io/npm/l/file-promisify.svg)](https://www.npmjs.com/package/file-promisify)
 
-Utilities for file handling and image handling, in JavaScript, with Promise.
+Utilities for file and image handling, in Browsers, with Promise.
+
+[Live demo](https://open.vales.io/file-promisify/demo.html)
 
 ## Installation
 
@@ -17,23 +19,23 @@ npm install --save file-promisify
 ```js
 import Files from 'file-promisify'
 
-const files = new Files()
+const instance = new Files()
 
 /** open file dialog */
-files.select()
+instance.select()
   .then(blob => {})
   .catch(error => {})
 
 /** open file dialog for selecting multiple files */
-files.select({ multiple: true })
+instance.select({ multiple: true })
   .then(blobs => {})
   .catch(error => {})
 
 /** open file dialog for selecting an image file */
-files.select({ accept: 'image/*' })
+instance.select({ accept: 'image/*' })
   .then(blob => {
-    /** wrap image into maximum 128 × 128 pixels */
-    Files.processImage({ blob, width: 128, height: 128, crop: false })
+    /** wrap image into maximum 320 × 240 pixels */
+    Files.processImage({ blob, width: 320, height: 240, crop: false })
       .then(dataUrl => {})
       .catch(error => {})
 
@@ -47,7 +49,7 @@ files.select({ accept: 'image/*' })
 
 ## API
 
-### `files.select({ multiple: [multiple], accept: [accept] })`
+### `instance.select({ multiple: [multiple], accept: [accept] })`
 
 Open a file dialog.
 
@@ -56,7 +58,7 @@ Open a file dialog.
 | `multiple` | Boolean | Multiple selection or not. | `false` |
 | `accept` | String | MIME type accepted. | `'*/*'` |
 
-- Returns: `Promise<Blob|Array<Blob>>`
+- Returns: `Promise<FileList>`
 
 ### `Files.processImage({ blob: <blob>, width: [width], height: [height], crop: [crop] })`
 
@@ -64,12 +66,22 @@ Process image.
 
 | Parameter | Type | Description | Default |
 | --- | --- | --- | --- |
-| `blob` | Blob | The blog of image data. | (required) |
+| `blob` | Blob | The blob of image data. | (required) |
 | `width` | Number | Target width. | `null` |
 | `height` | Number | Target height. | `null` |
 | `crop` | Boolean | Should crop or not. `true` for cropping image into dimension exactly, while `false` for wrapping image into the maximum dimension. | `false` |
 
-- Returns: `Promise<Uint8Array>`
+- Returns: `Promise<String>`
+
+### `Files.urlToImage(<url>)`
+
+Fetch image URL into Image instance.
+
+| Parameter | Type | Description | Default |
+| --- | --- | --- | --- |
+| `url` | String | The URL of image. | (required) |
+
+- Returns: `Promise<Image>`
 
 ### `Files.blobToDataUrl(<blob>)`
 
@@ -90,6 +102,16 @@ Transform data URL to Blob.
 | `dataUrl` | String | The data url. | (required) |
 
 - Returns: `Promise<Blob>`
+
+### `Files.dataUrlToBase64(<dataUrl>)`
+
+Transform data URL to Base64 encoded string.
+
+| Parameter | Type | Description | Default |
+| --- | --- | --- | --- |
+| `dataUrl` | String | The data url. | (required) |
+
+- Returns: `Promise<String>`
 
 ### `Files.blobToBase64(<blob>)`
 
@@ -113,7 +135,7 @@ Transform Blob to ArrayBuffer.
 
 ### `Files.blobToString(<blob>, [encoding])`
 
-Transform Blob to decoded string.
+Transform Blob to string.
 
 | Parameter | Type | Description | Default |
 | --- | --- | --- | --- |
@@ -162,32 +184,6 @@ Get MIME type from data URL.
 | `dataUrl` | String | The data url. | (required) |
 
 - Returns: `Promise<String>`
-
-### `Files.getImageSizeForContain(<sourceWidth>, <sourceHeight>, <targetWidth>, <targetHeight>)`
-
-Get the final dimension for containing according to source dimension and target dimension.
-
-| Parameter | Type | Description | Default |
-| --- | --- | --- | --- |
-| `sourceWidth` | Number | The source width. | (required) |
-| `sourceHeight` | Number | The source height. | (required) |
-| `targetWidth` | Number | The target width. | (required) |
-| `targetHeight` | Number | The target height. | (required) |
-
-- Returns: `{ width: String, height: String }`
-
-### `Files.getImageSizeForFill(<sourceWidth>, <sourceHeight>, <targetWidth>, <targetHeight>)`
-
-Get the final dimension for filling according to source dimension and target dimension.
-
-| Parameter | Type | Description | Default |
-| --- | --- | --- | --- |
-| `sourceWidth` | Number | The source width. | (required) |
-| `sourceHeight` | Number | The source height. | (required) |
-| `targetWidth` | Number | The target width. | (required) |
-| `targetHeight` | Number | The target height. | (required) |
-
-- Returns: `{ width: String, height: String }`
 
 ## License
 
