@@ -349,10 +349,10 @@ export default class Files {
     var height: number
     if (sourceWidth > targetWidth || sourceHeight > targetHeight) {
       if (sourceWidth > sourceHeight) {
-        height = sourceHeight / sourceWidth * targetWidth
+        height = Math.round(sourceHeight / sourceWidth * targetWidth)
         width = targetWidth
       } else {
-        width = sourceWidth / sourceHeight * targetWidth
+        width = Math.round(sourceWidth / sourceHeight * targetHeight)
         height = targetHeight
       }
     } else {

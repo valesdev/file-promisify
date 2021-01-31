@@ -1,6 +1,6 @@
 {
   "name": "file-promisify",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Utilities for file and image handling, in Browsers, with Promise.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
