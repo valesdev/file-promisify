@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es2015",
-    "module": "es2015",
-    "declaration": true,
+    "target": "es5",
+    "module": "esnext",
+    "lib": ["es6", "dom"],
     "strict": true,
-    "outDir": "lib"
+    "declaration": true,
+    "outDir": "dist"
   },
-  "include": ["src"],
-  "exclude": ["node_modules"]
+  "include": [
+    "src/**/*"
+  ]
 }

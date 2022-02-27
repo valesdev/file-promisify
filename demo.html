@@ -8,10 +8,11 @@
 
     <title>file-promisify demo</title>
 
-    <script type="module" src="//unpkg.com/file-promisify/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-promisify/dist/index.js"></script>
   </head>
+
   <body>
-    <h2>file-promisify demo</h2>
+    <h1>file-promisify demo</h1>
 
     <fieldset>
       <legend>Single file</legend>
@@ -21,7 +22,7 @@
       </div>
 
       <dl>
-        <dt>selected:</dt>
+        <dt>selection:</dt>
         <dd>
           <pre id="outputSingleFile" />
         </dd>
@@ -32,11 +33,11 @@
       <legend>Multiple files</legend>
 
       <div>
-        <button type="button" onclick="toSelectMultiple();">Select multiple files</button>
+        <button type="button" onclick="toSelectMultiple();">Select files</button>
       </div>
 
       <dl>
-        <dt>selected:</dt>
+        <dt>selection:</dt>
         <dd>
           <pre id="outputMultipleFiles" />
         </dd>
@@ -63,88 +64,89 @@
 
         <dt>crop image into 128 &times; 128 pixels exactly:</dt>
         <dd>
-          <img id="outputImageCropped" />
+          <p>
+            <img id="outputImageCropped" style="display: block;" />
+          </p>
         </dd>
 
-        <dt>wrap image into maximum 320 &times; 240 pixels:</dt>
+        <dt>wrap image into maximum 128 &times; 128 pixels:</dt>
         <dd>
-          <img id="outputImageWrapped" />
+          <p>
+            <img id="outputImageWrapped" style="display: block;" />
+          </p>
         </dd>
       </dl>
     </fieldset>
 
     <script type="module">
-      import Files from '//unpkg.com/file-promisify/lib/index.js'
-
-      const instance = new Files()
-
       window.document.addEventListener('DOMContentLoaded', function () {
-      }, false)
+        var instance = new window.Files();
 
-      window.toSelect = function () {
-        instance.select()
-          .then(function (files) {
-            window.document.getElementById('outputSingleFile').innerText = `${files[0].name} (${files[0].type}, ${files[0].size} bytes)`
-          })
-          .catch(function (error) {
-            window.alert(`Error: ${error.message}`)
-          })
-      }
+        window.toSelect = function () {
+          instance.select()
+            .then(function (files) {
+              window.document.getElementById('outputSingleFile').innerText = `${files[0].name} (${files[0].type}, ${files[0].size} bytes)`;
+            })
+            .catch(function (error) {
+              window.alert(`Error: ${error.message}`);
+            });
+        };
 
-      window.toSelectMultiple = function () {
-        instance.select({ multiple: true })
-          .then(function (files) {
-            window.document.getElementById('outputMultipleFiles').innerText = (Array.apply(null, new Array(files.length))).map(function (el, i) {
-              return `${files[i].name} (${files[i].type}, ${files[i].size} bytes)`
-            }).join('\n')
-          })
-          .catch(function (error) {
-            window.alert(`Error: ${error.message}`)
-          })
-      }
+        window.toSelectMultiple = function () {
+          instance.select({ multiple: true })
+            .then(function (files) {
+              window.document.getElementById('outputMultipleFiles').innerText = (Array.apply(null, new Array(files.length))).map(function (el, i) {
+                return `${files[i].name} (${files[i].type}, ${files[i].size} bytes)`;
+              }).join('\n');
+            })
+            .catch(function (error) {
+              window.alert(`Error: ${error.message}`);
+            });
+        };
 
-      window.toSelectImage = function () {
-        instance.select({ accept: 'image/*' })
-          .then(function (files) {
-            return files[0]
-          })
-          .then(function (file) {
-            Files.getImageOrientation(file)
-              .then(function (orientation) {
-                window.document.getElementById('outputOrientation').innerText = JSON.stringify(orientation)
-              })
-              .catch(function (error) {
-                window.document.getElementById('outputOrientation').innerText = `Error: ${error.message}`
-              })
+        window.toSelectImage = function () {
+          instance.select({ accept: 'image/*' })
+            .then(function (files) {
+              return files[0];
+            })
+            .then(function (file) {
+              window.Files.getImageOrientation(file)
+                .then(function (orientation) {
+                  window.document.getElementById('outputOrientation').innerText = JSON.stringify(orientation);
+                })
+                .catch(function (error) {
+                  window.document.getElementById('outputOrientation').innerText = `Error: ${error.message}`;
+                });
 
-            Files.blobToDataUrl(file)
-              .then(function (dataUrl) {
-                window.document.getElementById('outputDataUrl').innerText = dataUrl.substring(0, 64) + '…'
-              })
-              .catch(function (error) {
-                window.document.getElementById('outputDataUrl').innerText = `Error: ${error.message}`
-              })
+              window.Files.blobToDataUrl(file)
+                .then(function (dataUrl) {
+                  window.document.getElementById('outputDataUrl').innerText = dataUrl.substring(0, 64) + '…';
+                })
+                .catch(function (error) {
+                  window.document.getElementById('outputDataUrl').innerText = `Error: ${error.message}`;
+                });
 
-            Files.processImage({ blob: file, width: 128, height: 128, crop: true })
-              .then(function (dataUrl) {
-                window.document.getElementById('outputImageCropped').src = dataUrl
-              })
-              .catch(function (error) {
-                window.document.getElementById('outputImageCroppedLog').innerText = `Error: ${error.message}`
-              })
+              window.Files.processImage({ blob: file, width: 128, height: 128, crop: true })
+                .then(function (dataUrl) {
+                  window.document.getElementById('outputImageCropped').src = dataUrl;
+                })
+                .catch(function (error) {
+                  window.document.getElementById('outputImageCroppedLog').innerText = `Error: ${error.message}`;
+                });
 
-            Files.processImage({ blob: file, width: 320, height: 240, crop: false })
-              .then(function (dataUrl) {
-                window.document.getElementById('outputImageWrapped').src = dataUrl
-              })
-              .catch(function (error) {
-                window.document.getElementById('outputImageWrappedLog').innerText = `Error: ${error.message}`
-              })
-          })
-          .catch(function (error) {
-            window.alert(`Error: ${error.message}`)
-          })
-      }
+              window.Files.processImage({ blob: file, width: 128, height: 128, crop: false })
+                .then(function (dataUrl) {
+                  window.document.getElementById('outputImageWrapped').src = dataUrl;
+                })
+                .catch(function (error) {
+                  window.document.getElementById('outputImageWrappedLog').innerText = `Error: ${error.message}`;
+                })
+            })
+            .catch(function (error) {
+              window.alert(`Error: ${error.message}`);
+            });
+        };
+      }, false);
     </script>
   </body>
 </html>

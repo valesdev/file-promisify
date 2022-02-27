@@ -34,8 +34,8 @@ instance.select({ multiple: true })
 /** open file dialog for selecting an image file */
 instance.select({ accept: 'image/*' })
   .then(blob => {
-    /** wrap image into maximum 320 × 240 pixels */
-    Files.processImage({ blob, width: 320, height: 240, crop: false })
+    /** wrap image into maximum 128 × 128 pixels */
+    Files.processImage({ blob, width: 128, height: 128, crop: false })
       .then(dataUrl => {})
       .catch(error => {})
 
