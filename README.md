@@ -23,7 +23,7 @@ const instance = new Files()
 
 /** open file dialog */
 instance.select()
-  .then(blob => {})
+  .then(([blob]) => {})
   .catch(error => {})
 
 /** open file dialog for selecting multiple files */
