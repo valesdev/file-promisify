@@ -10,8 +10,16 @@ Utilities for file and image handling, in Browsers, with Promise.
 
 ## Installation
 
+### Node.js
+
 ```sh
-npm install --save file-promisify
+$ npm install --save file-promisify
+```
+
+### Browser via CDN
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/file-promisify/dist/index.umd.js"></script>
 ```
 
 ## Usage
